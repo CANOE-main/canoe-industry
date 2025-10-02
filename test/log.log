@@ -1,95 +1,95 @@
-02-Oct-25 11:40:56 | main | INFO | *** STARTING TEMOA ***
-02-Oct-25 11:40:56 | temoa_config | INFO | Scenario Name:  zulu2
-02-Oct-25 11:40:56 | temoa_config | INFO | Data source:  data_files\example_dbs\CAN_agriculture.sqlite
-02-Oct-25 11:40:56 | temoa_config | INFO | Data target:  data_files\example_dbs\CAN_agriculture.sqlite
-02-Oct-25 11:40:56 | temoa_config | INFO | Mode:  PERFECT_FORESIGHT
-02-Oct-25 11:40:57 | hybrid_loader | INFO | Loading data dictionary
-02-Oct-25 11:40:57 | commodity_network_manager | INFO | starting network analysis for region NLLAB
-02-Oct-25 11:40:57 | commodity_network_manager | INFO | starting network analysis for region BC
-02-Oct-25 11:40:57 | commodity_network_manager | INFO | starting network analysis for region SK
-02-Oct-25 11:40:57 | commodity_network_manager | INFO | starting network analysis for region ON
-02-Oct-25 11:40:57 | commodity_network_manager | INFO | starting network analysis for region AB
-02-Oct-25 11:40:57 | commodity_network_manager | INFO | starting network analysis for region NB
-02-Oct-25 11:40:57 | commodity_network_manager | INFO | starting network analysis for region NS
-02-Oct-25 11:40:57 | commodity_network_manager | INFO | starting network analysis for region MB
-02-Oct-25 11:40:57 | commodity_network_manager | INFO | starting network analysis for region PEI
-02-Oct-25 11:40:57 | commodity_network_manager | INFO | starting network analysis for region QC
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: time_exist
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: regionalGlobalIndices
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_baseload
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_storage
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_seasonal_storage
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_reserve
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_curtailment
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_flex
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_exchange
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_group_names
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_retirement
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: commodity_emissions
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: commodity_annual
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: commodity_waste
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: EfficiencyVariable
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: ExistingCapacity
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_exist
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: DemandSpecificDistribution
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: CapacityToActivity
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: CapacityFactorTech
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: CapacityFactorProcess
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LifetimeTech
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LifetimeProcess
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LifetimeSurvivalCurve
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LoanLifetimeProcess
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitTechInputSplit
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitTechOutputSplit
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitTechOutputSplitAnnual
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: RenewablePortfolioStandard
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: CostFixed
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: CostInvest
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: CostVariable
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: CostEmission
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LoanRate
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitCapacity
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitNewCapacity
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitCapacityShare
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitNewCapacityShare
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitActivityShare
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitResource
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitActivity
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitSeasonalCapacityFactor
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitAnnualCapacityFactor
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitGrowthCapacity
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitDegrowthCapacity
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitGrowthNewCapacity
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitDegrowthNewCapacity
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitGrowthNewCapacityDelta
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitDegrowthNewCapacityDelta
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitEmission
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: EmissionActivity
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: EmissionEmbodied
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: EmissionEndOfLife
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: ConstructionInput
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: EndOfLifeOutput
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LinkedTechs
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: RampUpHourly
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_upramping
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: RampDownHourly
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_downramping
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: CapacityCredit
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: ReserveCapacityDerate
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: PlanningReserveMargin
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: StorageDuration
-02-Oct-25 11:40:58 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitStorageFraction
-02-Oct-25 11:40:58 | run_actions | INFO | Started creating model instance from data
-02-Oct-25 11:40:58 | temoa_initialize | INFO | Running a seasonal time slice database. This behaviour can be changed using the time_sequencing parameter in the config file. 
-02-Oct-25 11:40:59 | run_actions | INFO | Finished creating model instance from data
-02-Oct-25 11:40:59 | run_actions | INFO | model built...  Variables: 756, Constraints: 816
-02-Oct-25 11:40:59 | pricing_check | INFO | Started price checking model: unknown
-02-Oct-25 11:40:59 | pricing_check | INFO | Finished Price Checking Build Action
-02-Oct-25 11:40:59 | run_actions | INFO | Starting the solve process using gurobi solver on model unknown
-02-Oct-25 11:40:59 | PyomoModel | WARNING | Loading a SolverResults object with a warning status into model.name="unknown";
+02-Oct-25 13:57:50 | main | INFO | *** STARTING TEMOA ***
+02-Oct-25 13:57:50 | temoa_config | INFO | Scenario Name:  zulu2
+02-Oct-25 13:57:50 | temoa_config | INFO | Data source:  data_files\example_dbs\CAN_industry.sqlite
+02-Oct-25 13:57:50 | temoa_config | INFO | Data target:  data_files\example_dbs\CAN_industry.sqlite
+02-Oct-25 13:57:50 | temoa_config | INFO | Mode:  PERFECT_FORESIGHT
+02-Oct-25 13:57:51 | hybrid_loader | INFO | Loading data dictionary
+02-Oct-25 13:57:51 | commodity_network_manager | INFO | starting network analysis for region MB
+02-Oct-25 13:57:51 | commodity_network_manager | INFO | starting network analysis for region ON
+02-Oct-25 13:57:51 | commodity_network_manager | INFO | starting network analysis for region NLLAB
+02-Oct-25 13:57:51 | commodity_network_manager | INFO | starting network analysis for region NB
+02-Oct-25 13:57:51 | commodity_network_manager | INFO | starting network analysis for region SK
+02-Oct-25 13:57:51 | commodity_network_manager | INFO | starting network analysis for region NS
+02-Oct-25 13:57:51 | commodity_network_manager | INFO | starting network analysis for region BC
+02-Oct-25 13:57:51 | commodity_network_manager | INFO | starting network analysis for region PEI
+02-Oct-25 13:57:51 | commodity_network_manager | INFO | starting network analysis for region AB
+02-Oct-25 13:57:51 | commodity_network_manager | INFO | starting network analysis for region QC
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: time_exist
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: regionalGlobalIndices
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_baseload
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_storage
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_seasonal_storage
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_reserve
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_curtailment
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_flex
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_exchange
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_group_names
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_retirement
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: commodity_emissions
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: commodity_annual
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: commodity_waste
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: EfficiencyVariable
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: ExistingCapacity
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_exist
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: DemandSpecificDistribution
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: CapacityToActivity
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: CapacityFactorTech
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: CapacityFactorProcess
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LifetimeTech
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LifetimeProcess
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LifetimeSurvivalCurve
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LoanLifetimeProcess
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitTechInputSplit
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitTechOutputSplit
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitTechOutputSplitAnnual
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: RenewablePortfolioStandard
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: CostFixed
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: CostInvest
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: CostVariable
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: CostEmission
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LoanRate
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitCapacity
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitNewCapacity
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitCapacityShare
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitNewCapacityShare
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitActivityShare
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitResource
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitActivity
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitSeasonalCapacityFactor
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitAnnualCapacityFactor
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitGrowthCapacity
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitDegrowthCapacity
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitGrowthNewCapacity
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitDegrowthNewCapacity
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitGrowthNewCapacityDelta
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitDegrowthNewCapacityDelta
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitEmission
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: EmissionActivity
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: EmissionEmbodied
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: EmissionEndOfLife
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: ConstructionInput
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: EndOfLifeOutput
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LinkedTechs
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: RampUpHourly
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_upramping
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: RampDownHourly
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: tech_downramping
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: CapacityCredit
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: ReserveCapacityDerate
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: PlanningReserveMargin
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: StorageDuration
+02-Oct-25 13:57:52 | hybrid_loader | INFO | table, but no (usable) values for param or set: LimitStorageFraction
+02-Oct-25 13:57:52 | run_actions | INFO | Started creating model instance from data
+02-Oct-25 13:57:53 | temoa_initialize | INFO | Running a seasonal time slice database. This behaviour can be changed using the time_sequencing parameter in the config file. 
+02-Oct-25 13:57:56 | run_actions | INFO | Finished creating model instance from data
+02-Oct-25 13:57:56 | run_actions | INFO | model built...  Variables: 8106, Constraints: 8622
+02-Oct-25 13:57:56 | pricing_check | INFO | Started price checking model: unknown
+02-Oct-25 13:57:56 | pricing_check | INFO | Finished Price Checking Build Action
+02-Oct-25 13:57:56 | run_actions | INFO | Starting the solve process using gurobi solver on model unknown
+02-Oct-25 13:57:57 | PyomoModel | WARNING | Loading a SolverResults object with a warning status into model.name="unknown";
   - termination condition: infeasible
   - message from solver: Model was proven to be infeasible.
-02-Oct-25 11:40:59 | run_actions | INFO | Solve process complete
-02-Oct-25 11:40:59 | run_actions | INFO | The solver reported status as: unknown
-02-Oct-25 11:40:59 | temoa_sequencer | ERROR | The solve result is reported as unknown was returned from solve.  Aborting
-02-Oct-25 11:40:59 | temoa_sequencer | ERROR | This may be the result of the output messaging of the chosen solverIf this is deemed an acceptable status, adjustment may be needed to the function check_solve_status in run_actions.py
+02-Oct-25 13:57:57 | run_actions | INFO | Solve process complete
+02-Oct-25 13:57:57 | run_actions | INFO | The solver reported status as: unknown
+02-Oct-25 13:57:57 | temoa_sequencer | ERROR | The solve result is reported as unknown was returned from solve.  Aborting
+02-Oct-25 13:57:57 | temoa_sequencer | ERROR | This may be the result of the output messaging of the chosen solverIf this is deemed an acceptable status, adjustment may be needed to the function check_solve_status in run_actions.py

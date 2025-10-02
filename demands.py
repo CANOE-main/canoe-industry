@@ -1,104 +1,277 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Aug 15 14:21:58 2025
+Industry: Demand & ExistingCapacity builder
 
-@author: david
+Functionalized from the user's working 'demands_work.py' so it can be called by
+the ETL aggregator:
+    from demands import build_demand_and_capacity_industry
+
+Key behavior (kept as in the working script):
+- Demand baseline uses NRCan CEUD 2022 by province; ATL is split using StatCan shares.
+- Demand for model years ≠ baseline is GDP-scaled using CER CEF GNZ.
+- ExistingCapacity uses the previous year (2021) values.
+- Notes/refs and column orders match the existing schema tables in comb_dict.
 """
+
 from __future__ import annotations
-import pandas as pd
 from typing import Dict
+import pandas as pd
 from common import setup_logging
 
 logger = setup_logging()
 
-ATL_MAP = { 'PEI': 'Prince Edward Island', 'NS': 'Nova Scotia', 'NB': 'New Brunswick', 'NLLAB': 'Newfoundland and Labrador' }
-SECTOR_KEY = 'Agriculture, fishing, hunting and trapping'
 
-
-def _gdp_scalers(pop_df: pd.DataFrame, periods: list[int]) -> dict[int, float]:
-    df = pop_df.copy()
-    df = df[df['Year'].isin(periods)]
-    df = df[df['Variable'] == 'Real Gross Domestic Product ($2012 Millions)']
-    df = df[df['Scenario'] == 'Global Net-zero']
-    df = df.sort_values('Year').reset_index(drop=True)
-    scalers: dict[int, float] = {}
-    for i, row in df.iterrows():
-        year = int(row['Year'])
-        if i == 0:
-            scalers[year] = 1.0
-        else:
-            prev = float(df.loc[i-1, 'Value']); cur = float(row['Value'])
-            scalers[year] = cur / prev if prev else 1.0
-    return scalers
-
-
-def _atl_split(val: float, province: str, shares: dict[str, dict[str, float]]) -> float | None:
-    if province not in ATL_MAP: return None
+# -----------------------------
+# Internal helpers
+# -----------------------------
+def _get_atl_share_key(dem_code: str, dem_to_sec: Dict[str, str]) -> str | None:
+    """Map 'D_MINING' -> ATL share category label via comb_dict['__canoe_dem_to_sec__']."""
     try:
-        return float(val) * float(shares[SECTOR_KEY][ATL_MAP[province]])
+        return dem_to_sec[dem_code]
     except Exception:
         return None
 
 
-def build_demand_and_capacity_agri(
+def _apply_atl_split(temp_val: float, dem_code: str, province: str,
+                     atl_shares: dict[str, dict[str, float]],
+                     dem_to_sec: Dict[str, str]) -> float | None:
+    """Split an ATL aggregate value into a specific Atlantic province using atl_shares."""
+    share_key = _get_atl_share_key(dem_code, dem_to_sec)
+    if share_key is None:
+        return None
+
+    prov_map = {
+        'PEI': 'Prince Edward Island',
+        'NB': 'New Brunswick',
+        'NS': 'Nova Scotia',
+        'NLLAB': 'Newfoundland and Labrador',
+    }
+    atl_name = prov_map.get(province)
+    if atl_name is None:
+        return None
+
+    try:
+        share = atl_shares[share_key][atl_name]
+        return float(temp_val) * float(share)
+    except Exception:
+        return None
+
+
+def _safe_loaded_value(loaded_df: dict, prov: str, nrcan_table_idx: int, year: str, x_index: int) -> float | None:
+    """
+    Access loaded_df[prov][nrcan_table_idx][year][x_index] defensively.
+    Returns float or None if unavailable.
+    """
+    try:
+        val = loaded_df[prov][nrcan_table_idx][year][x_index]
+        if val in (None, '', '0'):
+            # Normalize strings that represent zero
+            return 0.0 if val == '0' else None
+        return float(val)
+    except Exception:
+        return None
+
+
+# -----------------------------
+# Public entry point
+# -----------------------------
+def build_demand_and_capacity_industry(
     comb_dict: Dict[str, pd.DataFrame],
-    loaded_df: dict[str, pd.DataFrame],
+    loaded_df: dict[str, dict[int, pd.DataFrame]],
     pop_df: pd.DataFrame,
     atl_shares: dict[str, dict[str, float]],
 ) -> Dict[str, pd.DataFrame]:
-    dom = comb_dict['__domain__']; ids = comb_dict['__ids__']
-    sector_abv = dom['sector_abv']; province_list = dom['province_list']
-    sector_list = dom['sector_list']; periods = dom['periods']; atl_pro = set(dom['atl_pro'])
-    demand_com_list = comb_dict.get('__demand_com_list__', ['D_AGRI'])
+    """
+    Build Demand and ExistingCapacity tables and append to comb_dict.
 
-    gdp_scale = _gdp_scalers(pop_df, periods)
+    Parameters
+    ----------
+    comb_dict : dict[str, pd.DataFrame]
+        Working table frames + meta from the setup/techcom stages.
+    loaded_df : dict[str, dict[int, pd.DataFrame]]
+        NRCan CEUD aggregated tables as returned by data_scraper.load_cached_or_fetch_industry(..).
+    pop_df : pd.DataFrame
+        CER CEF macro indicators (contains Year, Scenario, Variable, Value).
+    atl_shares : dict[str, dict[str, float]]
+        StatCan ATL presence shares (sector -> {region_name -> share}).
 
-    # Base values from NRCan table (first row index 0 as in original)
-    base2022 = {p: float(loaded_df['ATL']['2022'][0]) if p in atl_pro else float(loaded_df[p]['2022'][0]) for p in province_list}
+    Returns
+    -------
+    comb_dict : dict[str, pd.DataFrame]
+        With Demand and ExistingCapacity appended.
+    """
+    # ---- Domain/meta pulled from comb_dict ----
+    dom = comb_dict['__domain__']
+    ids = comb_dict['__ids__']
+    dem_to_sec = comb_dict['__canoe_dem_to_sec__']
 
-    # Demand rows
-    d_rows = []
+    sector_abv: str = dom['sector_abv']
+    province_list: list[str] = dom['province_list']
+    sector_list: list[str] = dom['sector_list']
+    atl_pro: set[str] = set(dom['atl_pro'])
+    periods: list[int] = dom['periods']
+
+    # Demand commodities (comes from techcom step)
+    demand_com_list: list[str] = comb_dict.get('__demand_com_list__', [])
+    if not demand_com_list:
+        logger.warning("__demand_com_list__ missing; did you run techcom first?")
+        demand_com_list = [f"D_{s}" for s in sector_list]
+
+    # ---- GDP scaling dict from CER CEF GNZ ----
+    gdp_df = pop_df.copy()
+    gdp_df = gdp_df[gdp_df['Year'].isin(periods)]
+    gdp_df = gdp_df[gdp_df['Variable'] == 'Real Gross Domestic Product ($2012 Millions)']
+    gdp_df = gdp_df[gdp_df['Scenario'] == 'Global Net-zero']
+    gdp_df = gdp_df.sort_values('Year').reset_index(drop=True)
+
+    gdp_dict: dict[int, float] = {}
+    for i, row in gdp_df.iterrows():
+        year = int(row['Year'])
+        val = float(row['Value'])
+        if i == 0:
+            gdp_dict[year] = 1.0
+        else:
+            prev_val = float(gdp_df.loc[i - 1, 'Value'])
+            gdp_dict[year] = (val / prev_val) if prev_val != 0 else 1.0
+
+    # ---- Pull baseline (2022) demand by province for each demand commodity ----
+    # The indices 2..11 correspond to the demand_com_list order in the original script.
+    def _baseline_dict_for_year(year_str: str) -> dict[str, dict[str, float | None]]:
+        d: dict[str, dict[str, float | None]] = {
+            'AB': {}, 'ON': {}, 'MB': {}, 'QC': {}, 'BC': {}, 'SK': {}, 'ATL': {}
+        }
+        t = 0
+        for x in range(2, 12):
+            dem = demand_com_list[t]
+            d['AB'][dem]  = _safe_loaded_value(loaded_df, 'AB', 2, year_str, x)
+            d['ON'][dem]  = _safe_loaded_value(loaded_df, 'ON', 2, year_str, x)
+            d['MB'][dem]  = _safe_loaded_value(loaded_df, 'MB', 2, year_str, x)
+            d['QC'][dem]  = _safe_loaded_value(loaded_df, 'QC', 2, year_str, x)
+            d['BC'][dem]  = _safe_loaded_value(loaded_df, 'BC', 2, year_str, x)
+            d['SK'][dem]  = _safe_loaded_value(loaded_df, 'SK', 2, year_str, x)
+            d['ATL'][dem] = _safe_loaded_value(loaded_df, 'ATL', 2, year_str, x)
+            t += 1
+        return d
+
+    # Demand baseline (NRCan 2022), ExistingCapacity baseline (NRCan 2021)
+    base_2022 = _baseline_dict_for_year('2022')
+    base_2021 = _baseline_dict_for_year('2021')
+
+    # ---- Build Demand rows across model periods ----
+    dem_rows: list[list] = []
     for pro in province_list:
         for year in periods:
             for dem in demand_com_list:
-                if year == min(periods):
-                    notes, ref = 'Value from NRCan Comprehensive DB', '[A1]'
-                    val = base2022[pro]
-                    if pro in atl_pro:
-                        split = _atl_split(val, pro, atl_shares)
-                        if split is None: continue
-                        val, ref = split, '[A1][A3]'
-                else:
-                    notes, ref = 'Scaled by GDP growth from CER CEF', '[A1][A2]'
-                    val = base2022[pro] * gdp_scale[year]
-                    if pro in atl_pro:
-                        split = _atl_split(base2022[pro], pro, atl_shares)
-                        if split is None: continue
-                        val, ref = float(split) * gdp_scale[year], '[A1][A2][A3]'
+                notes = ''
+                ref = ''
+                val: float | None = None
 
-                d_rows.append([
-                    pro, int(year), sector_abv + dem.lower(), float(val), 'PJ', notes, ref, 1,1,2,3,2, ids[pro]
+                if year == 2025:
+                    # Latest actual (baseline) from NRCan CEUD (kept as in working script)
+                    notes = 'Value is taken from NRCan Comprehensive Energy Database, the latest value available'
+                    ref = '[I1]'
+
+                    if pro in ('AB', 'ON', 'BC', 'QC', 'MB', 'SK'):
+                        val = base_2022[pro].get(dem)
+                    elif pro in atl_pro:
+                        temp_val = base_2022['ATL'].get(dem)
+                        if temp_val in (None, 0.0):
+                            continue
+                        split_val = _apply_atl_split(temp_val, dem, pro, atl_shares, dem_to_sec)
+                        if split_val is None or split_val == 0.0:
+                            continue
+                        ref = '[I1][I3]'
+                        val = split_val
+                else:
+                    # GDP scaling factor from CER CEF GNZ
+                    notes = 'A scaling factor derived from the GDP growth from CER CEF report'
+                    ref = '[I1][I2]'
+                    scale = float(gdp_dict.get(year, 1.0))
+
+                    if pro in ('AB', 'ON', 'BC', 'QC', 'MB', 'SK'):
+                        base = base_2022[pro].get(dem)
+                        val = None if base is None else float(base) * scale
+                    elif pro in atl_pro:
+                        temp_val = base_2022['ATL'].get(dem)
+                        if temp_val in (None, 0.0):
+                            continue
+                        split_val = _apply_atl_split(temp_val, dem, pro, atl_shares, dem_to_sec)
+                        if split_val is None or split_val == 0.0:
+                            continue
+                        ref = '[I1][I2][I3]'
+                        val = float(split_val) * scale
+
+                # Skip rows with no value
+                if val in (None, ''):
+                    continue
+                if val == '0':
+                    val = 0.0
+
+                dem_rows.append([
+                    pro,
+                    int(year),
+                    sector_abv + dem.lower(),
+                    float(val),
+                    'PJ',
+                    notes,
+                    ref,
+                    1, 1, 2, 3, 2,
+                    ids[pro]
                 ])
 
-    demand_df = pd.DataFrame(d_rows, columns=comb_dict['Demand'].columns)
-    comb_dict['Demand'] = pd.concat([comb_dict['Demand'], demand_df], ignore_index=True)
-    logger.info("Demand rows: %d", len(d_rows))
+    if dem_rows:
+        dem_df = pd.DataFrame(dem_rows, columns=comb_dict['Demand'].columns)
+        comb_dict['Demand'] = pd.concat([comb_dict['Demand'], dem_df], ignore_index=True)
+        logger.info("Demand rows appended: %d", len(dem_rows))
+    else:
+        logger.warning("No Demand rows were generated.")
 
-    # ExistingCapacity from 2021 baseline
-    # base2021 = {p: float(loaded_df['ATL']['2021'][0]) if p in atl_pro else float(loaded_df[p]['2021'][0]) for p in province_list}
-    # cap_rows = []
+    # # ---- Build ExistingCapacity from previous year (2021) values ----
+    # cap_rows: list[list] = []
+    # cap_year = 2021  # previous to the 2022 baseline (kept from working script)
+
     # for pro in province_list:
     #     for sec in sector_list:
-    #         val = base2021[pro]
-    #         ref = '[A1]'
-    #         if pro in atl_pro:
-    #             split = _atl_split(val, pro, atl_shares)
-    #             if split is None: continue
-    #             val, ref = split, '[A1][A3]'
-    #         cap_rows.append([pro, sector_abv+sec, 2021, float(val), 'PJ', 'Existing capacity from NRCan baseline', ref, 1,1,2,3,2, ids[pro]])
+    #         dem_key = f"D_{sec}"
 
-    # cap_df = pd.DataFrame(cap_rows, columns=comb_dict['ExistingCapacity'].columns)
-    # comb_dict['ExistingCapacity'] = pd.concat([comb_dict['ExistingCapacity'], cap_df], ignore_index=True)
-    # logger.info("ExistingCapacity rows: %d", len(cap_rows))
+    #         if pro in ('AB', 'ON', 'BC', 'QC', 'MB', 'SK'):
+    #             val = base_2021[pro].get(dem_key)
+    #         elif pro in atl_pro:
+    #             temp_val = base_2021['ATL'].get(dem_key)
+    #             if temp_val in (None, 0.0):
+    #                 continue
+    #             split_val = _apply_atl_split(temp_val, dem_key, pro, atl_shares, dem_to_sec)
+    #             if split_val is None or split_val == 0.0:
+    #                 continue
+    #             val = split_val
+    #         else:
+    #             val = None
+
+    #         if val in (None, ''):
+    #             continue
+    #         if val == '0':
+    #             val = 0.0
+
+    #         ref = '[I1]' if pro not in atl_pro else '[I1][I3]'
+    #         notes = 'Existing capacity is taken from the NRCan comprehensive energy database, the previous value before demand'
+
+    #         cap_rows.append([
+    #             pro,
+    #             sector_abv + sec,
+    #             cap_year,
+    #             float(val),
+    #             'PJ',
+    #             notes,
+    #             ref,
+    #             1, 1, 2, 3, 2,
+    #             ids[pro]
+    #         ])
+
+    # if cap_rows:
+    #     cap_df = pd.DataFrame(cap_rows, columns=comb_dict['ExistingCapacity'].columns)
+    #     comb_dict['ExistingCapacity'] = pd.concat([comb_dict['ExistingCapacity'], cap_df], ignore_index=True)
+    #     logger.info("ExistingCapacity rows appended: %d", len(cap_rows))
+    # else:
+    #     logger.warning("No ExistingCapacity rows were generated.")
 
     return comb_dict

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Sep 26 08:48:03 2025
+Created on Fri Sep 26 09:02:13 2025
 
 @author: david
 """
@@ -11,7 +11,8 @@ from pathlib import Path
 from typing import Any, Dict
 import yaml
 
-LOGGER_NAME = "agri_etl"
+LOGGER_NAME = "industry_etl"
+
 
 def setup_logging(level: int = logging.INFO) -> logging.Logger:
     logger = logging.getLogger(LOGGER_NAME)
@@ -39,4 +40,10 @@ def ensure_dir(path: Path) -> Path:
 
 def project_paths() -> dict[str, Path]:
     root = Path.cwd()
-    return {"root": root, "input": root / "input", "outputs": root / "outputs", "cache": root / "cache", "schema": root / "schema"}
+    return {
+        "root": root,
+        "input": root / "input",
+        "outputs": root / "outputs",
+        "cache": root / "cache",
+        "schema": root / "schema",
+    }

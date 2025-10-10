@@ -9,6 +9,7 @@ from __future__ import annotations
 import pandas as pd
 from typing import Dict
 from common import setup_logging
+import numpy as np
 
 logger = setup_logging()
 
@@ -40,7 +41,7 @@ def build_cost_invest_industry(comb_dict: Dict[str, pd.DataFrame]) -> Dict[str, 
                 0.1,                 # cost
                 "M$/PJ",            # units
                 "Arbitrary amount for first time period",
-                "", "", "", "", "", "",
+                np.nan, np.nan, np.nan, np.nan, np.nan, np.nan,
                 ids[province],
             ])
 

@@ -188,3 +188,96 @@ Delete files in `cache/` to force fresh fetch.
 - Deterministic given fixed cached data + schema.  
 - Base period = direct NRCan; later periods scaled via CER GDP.  
 - Atlantic provinces = StatCan shares of ATL aggregate (2023 baseline).
+
+---
+
+## Aggregator options & toggles
+
+The industry aggregator is modular — you can **enable/disable steps** by commenting or uncommenting single lines in `aggregator.py`. This is useful when you want to build only part of the pipeline (e.g., skip costs or time-index scaffolding).
+
+> The default orchestrated run does: Technology/Commodity → External Data → Atlantic Shares → Demand → Tech Input Splits → Efficiency → Post-processing → Update IDs → Persist. See the code in `aggregator.py` for the exact order.
+
+### Where to edit
+Open **`aggregator.py`** and look at the calls inside `main()` (search for the numbered comments 1)–9) ).
+
+### Toggle reference
+
+- **Technology & Commodity scaffolding** (required)
+  ```python
+  comb_dict = build_technology_and_commodity_industry(comb_dict)
+  ```
+  Builds `Technology` and `Commodity` (incl. demand commodities). Keep this **enabled** for any run. (Defined in `techcom.py`.)
+
+- **External data fetch (NRCan & CER)** (required for demand/techinput)
+  ```python
+  loaded_df, pop_df = load_cached_or_fetch_industry(cfg.nrcan_year, project_paths()['cache'])
+  ```
+  Pulls/caches NRCan CEUD tables and CER macro indicators. (Defined in `data_scraper.py`.)
+
+- **Atlantic shares (StatCan)** (required if you include ATL provinces)
+  ```python
+  atl_shares = load_statcan_atl_shares(project_paths()['cache'])
+  ```
+  Loads ATL allocation shares for **PEI, NB, NS, NLLAB**. (Defined in `statcan.py`.)
+
+- **Demand (and optional ExistingCapacity)** (optional if you only want structure)
+  ```python
+  comb_dict = build_demand_and_capacity_industry(comb_dict, loaded_df, pop_df, atl_shares)
+  ```
+  Appends `Demand`. In `demands.py`, the `ExistingCapacity` block is present but commented—uncomment inside **`demands.py`** if you also want `ExistingCapacity` rows.
+
+- **LimitTechInputSplitAnnual (fuel shares)** (optional but recommended; enables Efficiency)
+  ```python
+  comb_dict = build_limit_tech_input_split_industry(comb_dict, loaded_df, atl_shares)
+  ```
+  Builds input splits from NRCan shares (handles `n.a.`/`X` as remainder-to-100%, trims >100%). `Efficiency` depends on this being present.
+
+- **Efficiency** (optional; depends on LimitTechInputSplitAnnual)
+  ```python
+  comb_dict = build_efficiency_industry(comb_dict)
+  ```
+  Generates `Efficiency` with output commodities derived from technology names.
+
+- **Costs (CostInvest seeding)** (fully optional; OFF by default)
+  ```python
+  # comb_dict = build_cost_invest_industry(comb_dict)
+  ```
+  Placeholder `CostInvest` rows. **Uncomment** to include. (Function is in `costs.py`.)
+
+- **Post-processing: DataSet & DataSource** (recommended)
+  ```python
+  comb_dict = add_datasets_and_sources_industry(comb_dict)
+  ```
+  Adds dataset metadata and citations `[I1]–[I4]`.
+
+- **Time/Region scaffolding (TEMOA-style indices)** (optional; OFF by default)
+  ```python
+  # comb_dict = add_time_ind(comb_dict)
+  ```
+  Populates `TimeOfDay`, `TimePeriod`, `TimeSeason`, `SeasonLabel`, `TimeSegmentFraction`, and `Region`. **Uncomment** if you want full time-index tables.
+
+- **ID update for region-/sector-specific rows** (optional but recommended)
+  ```python
+  comb_dict = update_ids(comb_dict)
+  ```
+  Assigns `data_id`s to `Technology`, `Demand`, `Efficiency`, and `LimitTechInputSplitAnnual` based on region & sector naming.
+
+### Dependency tips
+- `Efficiency` **requires** `LimitTechInputSplitAnnual` to be present (it is derived from it).
+- `Demand` uses both **NRCan** (base) and **CER** (GDP scaling) plus **StatCan** (ATL split).
+- If you **exclude Demand**, you can still build structure (`Technology`, `Commodity`) and fuel shares/efficiency.
+- If you **exclude ATL shares** but keep ATL provinces in `params.yaml`, ATL demand/splits will be missing for those provinces.
+
+### Example builds
+
+- **Structure only (no data rows):**
+  - Keep: `build_technology_and_commodity_industry`
+  - Comment out: demand, techinput, efficiency, costs, post-processing, time, update_ids
+
+- **Demand-only (no splits/efficiency/costs):**
+  - Keep: tech/commodity, external data, atl shares, demand, post-processing, update_ids
+  - Comment out: techinput, efficiency, costs, time
+
+- **Full run with costs and time indices:**
+  - Uncomment costs and time lines as shown above.
+

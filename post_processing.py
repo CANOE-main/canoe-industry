@@ -25,7 +25,7 @@ def add_datasets_and_sources_industry(comb_dict: Dict[str, pd.DataFrame]) -> Dic
         ds_rows.append([
             ids[pro], f"{pro} - industry - high resolution", f"v{version}",
             "2025 annual update", "active",
-            "David Turnbull - david.turnbull1@ucalgary.ca", "08-2025", np.nan,
+            "David Turnbull - david.turnbull1@ucalgary.ca", "2025-08-01", np.nan,
             "Original sector design", np.nan,
         ])
 
@@ -106,4 +106,58 @@ def add_time_ind(comb_dict: Dict[str, pd.DataFrame]) -> Dict[str, pd.DataFrame]:
     comb_dict['TimeSegmentFraction']= pd.concat([comb_dict['TimeSegmentFraction'], tsf_df], ignore_index=True)
     reg_df =  pd.DataFrame(reg, columns =comb_dict['Region'].columns )
     comb_dict['Region']= pd.concat([comb_dict['Region'], reg_df], ignore_index=True)
+    return comb_dict
+
+def update_ids(comb_dict):
+    dom = comb_dict['__domain__']
+    province_list = dom['province_list']
+    version = comb_dict['__version__']
+    province_list.append('CAN')
+    sectors = ['CEM', 'CON', 'STEEL', 'PULP', 'SMELT', 'REF', 'CHEM', 'FOR', 'MIN', 'OTH']
+    gen_id = {}
+    spec_id = {}
+
+    for pro in province_list:
+        for sec in sectors:
+            if pro == 'CAN':
+                val = f"IND{sec}LR{version}"
+                gen_id[sec]=(val)
+            else:
+                val = f"IND{sec}{pro}LR{version}"
+                spec_id[pro,sec]=(val)
+    comb_dict['Commodity']['data_id']='INDHR001'
+    for sec in sectors:
+            mask = comb_dict['Technology']['tech'].astype(str).str.contains(
+                rf'{sec}', case=True, regex=True, na=False)
+            comb_dict['Technology'].loc[mask, 'data_id'] = gen_id[sec]
+    for pro in province_list:
+        if pro == 'CAN':
+            continue
+        reg_mask = comb_dict['Demand']['region'].astype(str).eq(pro)
+        if not reg_mask.any():
+            continue
+        for sec in sectors:
+            sec_mask = comb_dict['Demand']['commodity'].astype(str).str.contains(rf'{sec}', case=False, regex=True, na=False)
+            mask = reg_mask & sec_mask
+            comb_dict['Demand'].loc[mask, 'data_id'] = spec_id[pro, sec]
+    for pro in province_list:
+        if pro == 'CAN':
+            continue
+        reg_mask = comb_dict['Efficiency']['region'].astype(str).eq(pro)
+        if not reg_mask.any():
+            continue
+        for sec in sectors:
+            sec_mask = comb_dict['Efficiency']['tech'].astype(str).str.contains(rf'{sec}', case=False, regex=True, na=False)
+            mask = reg_mask & sec_mask
+            comb_dict['Efficiency'].loc[mask, 'data_id'] = spec_id[pro, sec]
+    for pro in province_list:
+        if pro == 'CAN':
+            continue
+        reg_mask = comb_dict['LimitTechInputSplitAnnual']['region'].astype(str).eq(pro)
+        if not reg_mask.any():
+            continue
+        for sec in sectors:
+            sec_mask = comb_dict['LimitTechInputSplitAnnual']['tech'].astype(str).str.contains(rf'{sec}', case=False, regex=True, na=False)
+            mask = reg_mask & sec_mask
+            comb_dict['LimitTechInputSplitAnnual'].loc[mask, 'data_id'] = spec_id[pro, sec]
     return comb_dict

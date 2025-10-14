@@ -8,6 +8,7 @@ from __future__ import annotations
 import pandas as pd
 from typing import Dict
 from common import setup_logging
+import numpy as np
 
 logger = setup_logging()
 
@@ -29,7 +30,7 @@ def build_technology_and_commodity_industry(comb_dict: Dict[str, pd.DataFrame]) 
             sector_abv + sec,
             "p",
             "industrial",
-            "", "", 1, 1, 0, 0, 0, 0, 0, 0,
+            np.nan, np.nan, 1, 1, 0, 0, 0, 0, 0, 0,
             f"Generic technology representing {sector_list_ex[i]} industry",
             ids['CAN'],
         ])

@@ -8,6 +8,7 @@ from __future__ import annotations
 from typing import Dict
 import pandas as pd
 from common import setup_logging
+import numpy as np 
 
 logger = setup_logging()
 
@@ -24,17 +25,18 @@ def add_datasets_and_sources_industry(comb_dict: Dict[str, pd.DataFrame]) -> Dic
         ds_rows.append([
             ids[pro], f"{pro} - industry - high resolution", f"v{version}",
             "2025 annual update", "active",
-            "David Turnbull - david.turnbull1@ucalgary.ca", "08-2025", "",
-            "Original sector design", "",
+            "David Turnbull - david.turnbull1@ucalgary.ca", "08-2025", np.nan,
+            "Original sector design", np.nan,
         ])
 
     ds_df = pd.DataFrame(ds_rows, columns=comb_dict['DataSet'].columns)
     comb_dict['DataSet'] = pd.concat([comb_dict['DataSet'], ds_df], ignore_index=True)
 
     src_rows = [
-        ['[I1]', 'NRCan Comprehensive Database', 'Used the appropriate tables for each sector and province', ids['CAN']],
-        ['[I2]', 'CER Canada Energy Futures report', 'Global net zero macro-economic indicators', ids['CAN']],
-        ['[I3]', 'Statistics Canada 25-10-0029-01', 'ATL presence shares for sectoral allocation', ids['CAN']],
+        ['I1', 'NRCan Comprehensive Database, https://oee.nrcan.gc.ca/corporate/statistics/neud/dpa/menus/trends/comprehensive_tables/list.cfm', 'Used the appropriate tables for each sector and province', ids['CAN']],
+        ['I2', 'NRCan Comprehensive Database, https://oee.nrcan.gc.ca/corporate/statistics/neud/dpa/menus/trends/comprehensive_tables/list.cfm; CER Canada Energy Futures report, https://apps.cer-rec.gc.ca/ftrppndc/dflt.aspx?GoCTemplateCulture=en-CA', 'Global net zero macro-economic indicators', ids['CAN']],
+        ['I3', 'NRCan Comprehensive Database, https://oee.nrcan.gc.ca/corporate/statistics/neud/dpa/menus/trends/comprehensive_tables/list.cfm; Statistics Canada 25-10-0029-01, https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2510002901', 'ATL presence shares for sectoral allocation', ids['CAN']],
+        ['I4', 'NRCan Comprehensive Database, https://oee.nrcan.gc.ca/corporate/statistics/neud/dpa/menus/trends/comprehensive_tables/list.cfm; CER Canada Energy Futures report, https://apps.cer-rec.gc.ca/ftrppndc/dflt.aspx?GoCTemplateCulture=en-CA;  Statistics Canada 25-10-0029-01, https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2510002901', 'Combined reference that uses GDP growth, statcan distribution and NRCan original demands to predict atlantic province demands',ids['CAN']]
     ]
     src_df = pd.DataFrame(src_rows, columns=comb_dict['DataSource'].columns)
     comb_dict['DataSource'] = pd.concat([comb_dict['DataSource'], src_df], ignore_index=True)

@@ -103,7 +103,7 @@ def build_limit_tech_input_split_industry(
                         per,
                         f"I_{com}",
                         f"{sector_abv}{sec}",
-                        'e',
+                        'ge',
                         final_val,
                         (
                             'Calculated from NRCan comprehensive database. If values were n.a., '

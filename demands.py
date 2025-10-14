@@ -180,12 +180,12 @@ def build_demand_and_capacity_industry(
                         split_val = _apply_atl_split(temp_val, dem, pro, atl_shares, dem_to_sec)
                         if split_val is None or split_val == 0.0:
                             continue
-                        ref = '[I1][I3]'
+                        ref = '[I3]'
                         val = split_val
                 else:
                     # GDP scaling factor from CER CEF GNZ
                     notes = 'A scaling factor derived from the GDP growth from CER CEF report'
-                    ref = '[I1][I2]'
+                    ref = '[I2]'
                     scale = float(gdp_dict.get(year, 1.0))
 
                     if pro in ('AB', 'ON', 'BC', 'QC', 'MB', 'SK'):
@@ -198,7 +198,7 @@ def build_demand_and_capacity_industry(
                         split_val = _apply_atl_split(temp_val, dem, pro, atl_shares, dem_to_sec)
                         if split_val is None or split_val == 0.0:
                             continue
-                        ref = '[I1][I2][I3]'
+                        ref = '[I4]'
                         val = float(split_val) * scale
 
                 # Skip rows with no value

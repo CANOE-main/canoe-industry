@@ -25,7 +25,7 @@ This README documents the `src/*_industry.py` modules from the professional refa
 
 ## Overview
 
-The pipeline orchestrates these steps:
+To find the layout of the industrial data please go to [Industrial Sector documentation](industrial.md). The pipeline orchestrates these steps:
 
 1. **Setup**: Create fresh SQLite DB from schema; introspect table structures to prepare empty DataFrames (`comb_dict`).  
 2. **Technology & Commodity**: Add Industry technologies and commodities, including demand commodities.  

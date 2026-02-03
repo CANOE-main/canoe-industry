@@ -94,7 +94,7 @@ requests
 3. Run the aggregator:
 
 ```bash
-python aggregator_industry.py --db-name CAN_industry.sqlite
+python aggregator.py --db-name CAN_industry.sqlite
 ```
 
 Output DB is written to `outputs/CAN_industry.sqlite`.

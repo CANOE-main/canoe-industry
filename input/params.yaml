@@ -14,10 +14,8 @@ schema_version:
 
 #Choose the time periods being included in the study
 periods:
-  #- 2021
   - 2025
   - 2030
   - 2035
   - 2040
   - 2045
-  - 2050

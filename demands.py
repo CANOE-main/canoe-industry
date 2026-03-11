@@ -16,7 +16,7 @@ Key behavior (kept as in the working script):
 from __future__ import annotations
 from typing import Dict
 import pandas as pd
-from common import setup_logging
+from common import setup_logging, data_year
 
 logger = setup_logging()
 
@@ -118,12 +118,18 @@ def build_demand_and_capacity_industry(
         demand_com_list = [f"D_{s}" for s in sector_list]
 
     # ---- GDP scaling dict from CER CEF GNZ ----
+    # End-of-period convention: include both period years and their end-of-period
+    # data years so we can compute growth rates that span each period.
+    end_years = [data_year(p, periods) for p in periods]
+    all_gdp_years = sorted(set(periods) | set(end_years))
+
     gdp_df = pop_df.copy()
-    gdp_df = gdp_df[gdp_df['Year'].isin(periods)]
+    gdp_df = gdp_df[gdp_df['Year'].isin(all_gdp_years)]
     gdp_df = gdp_df[gdp_df['Variable'] == 'Real Gross Domestic Product ($2012 Millions)']
     gdp_df = gdp_df[gdp_df['Scenario'] == 'Global Net-zero']
     gdp_df = gdp_df.sort_values('Year').reset_index(drop=True)
 
+    # gdp_dict[y] = GDP(y) / GDP(previous year in filtered set), first entry = 1.0
     gdp_dict: dict[int, float] = {}
     for i, row in gdp_df.iterrows():
         year = int(row['Year'])
@@ -161,45 +167,38 @@ def build_demand_and_capacity_industry(
     dem_rows: list[list] = []
     for pro in province_list:
         for year in periods:
+            dy = data_year(year, periods)
+            # Growth factor from the start of this period to its end (data year)
+            scale = float(gdp_dict.get(dy, 1.0))
+
             for dem in demand_com_list:
                 notes = ''
                 ref = ''
                 val: float | None = None
 
-                if year == 2025:
-                    # Latest actual (baseline) from NRCan CEUD (kept as in working script)
-                    notes = 'Value is taken from NRCan Comprehensive Energy Database, the latest value available'
-                    ref = '[I1]'
-
-                    if pro in ('AB', 'ON', 'BC', 'QC', 'MB', 'SK'):
-                        val = base_2022[pro].get(dem)
-                    elif pro in atl_pro:
-                        temp_val = base_2022['ATL'].get(dem)
-                        if temp_val in (None, 0.0):
-                            continue
-                        split_val = _apply_atl_split(temp_val, dem, pro, atl_shares, dem_to_sec)
-                        if split_val is None or split_val == 0.0:
-                            continue
-                        ref = '[I3]'
-                        val = split_val
-                else:
-                    # GDP scaling factor from CER CEF GNZ
-                    notes = 'A scaling factor derived from the GDP growth from CER CEF report'
+                if pro in ('AB', 'ON', 'BC', 'QC', 'MB', 'SK'):
+                    base = base_2022[pro].get(dem)
+                    if base is None:
+                        continue
+                    val = float(base) * scale
+                    notes = (
+                        f'GDP-scaled from NRCan 2022 baseline to data year {dy} '
+                        'using CER CEF Global Net-zero GDP growth'
+                    )
                     ref = '[I2]'
-                    scale = float(gdp_dict.get(year, 1.0))
-
-                    if pro in ('AB', 'ON', 'BC', 'QC', 'MB', 'SK'):
-                        base = base_2022[pro].get(dem)
-                        val = None if base is None else float(base) * scale
-                    elif pro in atl_pro:
-                        temp_val = base_2022['ATL'].get(dem)
-                        if temp_val in (None, 0.0):
-                            continue
-                        split_val = _apply_atl_split(temp_val, dem, pro, atl_shares, dem_to_sec)
-                        if split_val is None or split_val == 0.0:
-                            continue
-                        ref = '[I4]'
-                        val = float(split_val) * scale
+                elif pro in atl_pro:
+                    temp_val = base_2022['ATL'].get(dem)
+                    if temp_val in (None, 0.0):
+                        continue
+                    split_val = _apply_atl_split(temp_val, dem, pro, atl_shares, dem_to_sec)
+                    if split_val is None or split_val == 0.0:
+                        continue
+                    val = float(split_val) * scale
+                    notes = (
+                        f'GDP-scaled from NRCan 2022 ATL baseline to data year {dy} '
+                        'using CER CEF Global Net-zero GDP growth and StatCan regional shares'
+                    )
+                    ref = '[I4]'
 
                 # Skip rows with no value
                 if val in (None, ''):

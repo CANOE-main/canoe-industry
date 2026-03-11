@@ -85,8 +85,8 @@ def load_runtime_industry(temp_db_name: str = "CAN_industry.sqlite") -> tuple[Pa
     atl_pro = ['PEI', 'NB', 'NS', 'NLLAB']
 
     # Build IDs
-    id_dict: dict[str, str] = {p: f"GENINDHR{p}{cfg.version}" for p in province_list}
-    id_dict['CAN'] = f"GENINDHR{cfg.version}"
+    id_dict: dict[str, str] = {p: f"INDHR{p}{cfg.version}" for p in province_list}
+    id_dict['CAN'] = f"INDHR{cfg.version}"
 
     db_path = paths["outputs"] / temp_db_name
     schema_sql = schema_file_for(cfg).read_text(encoding="utf-8")

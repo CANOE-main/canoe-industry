@@ -118,10 +118,11 @@ def build_demand_and_capacity_industry(
         demand_com_list = [f"D_{s}" for s in sector_list]
 
     # ---- GDP scaling dict from CER CEF GNZ ----
-    # End-of-period convention: include both period years and their end-of-period
-    # data years so we can compute growth rates that span each period.
+    # Build cumulative growth factors from the NRCan baseline year to each
+    # period's data year (end-of-period convention: data_year = period + 5).
+    nrcan_year: int = 2022  # must match the NRCan baseline used in base_2022
     end_years = [data_year(p, periods) for p in periods]
-    all_gdp_years = sorted(set(periods) | set(end_years))
+    all_gdp_years = sorted(set([nrcan_year]) | set(end_years))
 
     gdp_df = pop_df.copy()
     gdp_df = gdp_df[gdp_df['Year'].isin(all_gdp_years)]
@@ -129,16 +130,22 @@ def build_demand_and_capacity_industry(
     gdp_df = gdp_df[gdp_df['Scenario'] == 'Global Net-zero']
     gdp_df = gdp_df.sort_values('Year').reset_index(drop=True)
 
-    # gdp_dict[y] = GDP(y) / GDP(previous year in filtered set), first entry = 1.0
+    # gdp_dict[y] = GDP(y) / GDP(nrcan_year): cumulative growth from the NRCan base year
+    gdp_base_rows = gdp_df[gdp_df['Year'] == nrcan_year]
+    if gdp_base_rows.empty:
+        logger.warning(
+            "GDP data missing for NRCan base year %d; all scale factors will default to 1.0",
+            nrcan_year,
+        )
+        gdp_base_val = None
+    else:
+        gdp_base_val = float(gdp_base_rows.iloc[0]['Value'])
+
     gdp_dict: dict[int, float] = {}
-    for i, row in gdp_df.iterrows():
+    for _, row in gdp_df.iterrows():
         year = int(row['Year'])
         val = float(row['Value'])
-        if i == 0:
-            gdp_dict[year] = 1.0
-        else:
-            prev_val = float(gdp_df.loc[i - 1, 'Value'])
-            gdp_dict[year] = (val / prev_val) if prev_val != 0 else 1.0
+        gdp_dict[year] = (val / gdp_base_val) if gdp_base_val else 1.0
 
     # ---- Pull baseline (2022) demand by province for each demand commodity ----
     # The indices 2..11 correspond to the demand_com_list order in the original script.

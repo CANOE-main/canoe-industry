@@ -81,7 +81,7 @@ def add_time_ind(comb_dict: Dict[str, pd.DataFrame]) -> Dict[str, pd.DataFrame]:
     for period in periods:
         tp.append([x, period, 'f'])
         x+=1
-    tp.append([x,2055, 'f'])
+    tp.append([x,2050, 'f'])
     ts = []
     for period in periods:
         x=0

@@ -40,9 +40,9 @@ class Config:
 
 def schema_file_for(cfg: Config) -> Path:
     paths = project_paths()
-    if cfg.schema_version != 31:
-        return paths["schema"] / f"schema_{cfg.schema_version}.sql"
-    return paths["schema"] / "schema_3_1.sql"
+    # if cfg.schema_version != 31:
+    #     return paths["schema"] / f"schema_{cfg.schema_version}.sql"
+    return paths["schema"] / "canoe_dataset_schema.sql"
 
 
 def prepare_database(db_path: Path, schema_sql: str) -> list[str]:

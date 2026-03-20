@@ -44,7 +44,7 @@ def build_efficiency_industry(comb_dict: Dict[str, pd.DataFrame]) -> Dict[str, p
                     f'included commodities from NRCan Comp DB (data year {data_year(p, model_periods)})'
                 )
             ),
-            'data_source': '[I1]',
+            'data_source': 'I1',
             'data_id': inp['data_id'],
             'dq_cred': np.nan, 'dq_geog': np.nan, 'dq_struc': np.nan, 'dq_tech': np.nan, 'dq_time': np.nan,
         })

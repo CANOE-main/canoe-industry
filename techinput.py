@@ -110,7 +110,7 @@ def build_limit_tech_input_split_industry(
                             f'{data_year(per, periods)}). If values were n.a., '
                             'the remainder to 100% is evenly distributed.'
                         ),
-                        '[I1]',
+                        'I1',
                         2, 1, 2, 3, 3,
                         ids[region],
                     ])

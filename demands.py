@@ -192,7 +192,7 @@ def build_demand_and_capacity_industry(
                         f'GDP-scaled from NRCan 2022 baseline to data year {dy} '
                         'using CER CEF Global Net-zero GDP growth'
                     )
-                    ref = '[I2]'
+                    ref = 'I2'
                 elif pro in atl_pro:
                     temp_val = base_2022['ATL'].get(dem)
                     if temp_val in (None, 0.0):
@@ -205,7 +205,7 @@ def build_demand_and_capacity_industry(
                         f'GDP-scaled from NRCan 2022 ATL baseline to data year {dy} '
                         'using CER CEF Global Net-zero GDP growth and StatCan regional shares'
                     )
-                    ref = '[I4]'
+                    ref = 'I4'
 
                 # Skip rows with no value
                 if val in (None, ''):
@@ -258,7 +258,7 @@ def build_demand_and_capacity_industry(
     #         if val == '0':
     #             val = 0.0
 
-    #         ref = '[I1]' if pro not in atl_pro else '[I1][I3]'
+    #         ref = 'I1' if pro not in atl_pro else 'I1I3'
     #         notes = 'Existing capacity is taken from the NRCan comprehensive energy database, the previous value before demand'
 
     #         cap_rows.append([

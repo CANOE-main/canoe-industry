@@ -3,7 +3,7 @@
 A modular ETL pipeline that builds the **Industry** sector tables for the CANOE database.  
 It integrates **NRCan** (Comprehensive Energy Use Database), **CER** (Energy Futures macro indicators), and **Statistics Canada Table 25-10-0029-01** to allocate **Atlantic provinces** (PEI, NB, NS, NLLAB).
 
-This README documents the `src/*_industry.py` modules from the professional refactor.
+For comprehensive documentation, please go to [CANOE Industry](https://canoe-main.github.io/canoe-industry/)
 
 ---
 

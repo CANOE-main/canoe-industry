@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CANOE Industry Sector Documentation</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --fg: #1a1a2e;
+            --accent: 0f3460;
+            --accent-light: #ffebee;
+            --border: #ffcdd2;
+            --code-bg: #fdfafb;
+            --link: #1976d2;
+            --toc-bg: #fffcfc;
+            --sidebar-width: 280px;
+            --max-content: 920px;
+            --table-header-bg: #ffebee;
+            --table-stripe: #fff9f9;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.65;
+            color: var(--fg);
+            background: var(--bg);
+        }
+
+        /* ---- Sidebar navigation ---- */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            overflow-y: auto;
+            background: var(--toc-bg);
+            border-right: 1px solid var(--border);
+            padding: 1.2rem 1rem;
+            z-index: 100;
+        }
+
+        #sidebar h2 {
+            margin: 0 0 0.8rem 0;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #sidebar li {
+            margin: 0.15rem 0;
+        }
+
+        #sidebar a {
+            display: block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: var(--fg);
+            text-decoration: none;
+            font-size: 0.85rem;
+            line-height: 1.35;
+            transition: background 0.15s;
+        }
+
+        #sidebar a:hover,
+        #sidebar a.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        #sidebar .toc-section {
+            margin-top: 1.2rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border);
+        }
+
+        #sidebar .toc-section-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        /* ---- Main content ---- */
+        #content {
+            margin-left: var(--sidebar-width);
+            max-width: var(--max-content);
+            padding: 2rem 2.5rem 4rem 2.5rem;
+        }
+
+        /* ---- Typography ---- */
+        h1 {
+            font-size: 2rem;
+            margin: 2rem 0 0.6rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin: 2.4rem 0 0.5rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin: 1.8rem 0 0.4rem;
+            color: var(--accent);
+        }
+
+        h4 {
+            font-size: 1.05rem;
+            margin: 1.4rem 0 0.3rem;
+        }
+
+        p {
+            margin: 0.6rem 0;
+        }
+
+        a {
+            color: var(--link);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* ---- Code ---- */
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.88em;
+            background: var(--code-bg);
+            padding: 0.15em 0.35em;
+            border-radius: 4px;
+        }
+
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        /* ---- Tables ---- */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+            font-size: 0.92rem;
+        }
+
+        th,
+        td {
+            padding: 0.55rem 0.75rem;
+            border: 1px solid var(--border);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: var(--table-header-bg);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) td {
+            background: var(--table-stripe);
+        }
+
+        /* ---- Lists ---- */
+        ul,
+        ol {
+            padding-left: 1.6rem;
+        }
+
+        li {
+            margin: 0.25rem 0;
+        }
+
+        li>ul,
+        li>ol {
+            margin-top: 0.15rem;
+        }
+
+        /* ---- Blockquotes (used for notes) ---- */
+        blockquote {
+            margin: 1rem 0;
+            padding: 0.8rem 1.2rem;
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+        }
+
+        blockquote p {
+            margin: 0.2rem 0;
+        }
+
+        /* ---- Horizontal rule ---- */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2rem 0;
+        }
+
+        /* ---- Section divider ---- */
+        .section-divider {
+            margin: 3rem 0;
+            padding: 1.5rem 0 0;
+            border-top: 3px solid var(--accent);
+        }
+
+        .section-divider h1 {
+            border-bottom: none;
+            margin-top: 0;
+        }
+
+        /* ---- Print styles ---- */
+        @media print {
+            #sidebar {
+                display: none;
+            }
+
+            #content {
+                margin-left: 0;
+                max-width: 100%;
+            }
+
+            h1,
+            h2,
+            h3 {
+                break-after: avoid;
+            }
+
+            table {
+                break-inside: avoid;
+            }
+
+            pre {
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 900px) {
+            #sidebar {
+                display: none;
+            }
+
+            #content {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav id="sidebar">
+        <h2>CANOE Documentation</h2>
+        <div class="toc-section">
+            <div class="toc-section-label">Data Processing</div>
+            <ul>
+                <li><a href="#canoe-industry-sector-data-processing-documentation">CANOE Industry Sector &mdash; Data
+                        Processing</a></li>
+                <li><a href="#table-of-contents">Table of Contents</a></li>
+                <li><a href="#1-overview">1. Overview</a></li>
+                <li><a href="#2-pipeline-architecture">2. Pipeline Architecture</a></li>
+                <li><a href="#3-configuration-and-setup">3. Configuration and Setup</a></li>
+                <li><a href="#4-external-data-fetching">4. External Data Fetching</a></li>
+                <li><a href="#5-demand-and-capacity">5. Demand and Capacity</a></li>
+                <li><a href="#6-technology-splits-and-efficiencies">6. Tech Splits &amp; Efficiencies</a></li>
+                <li><a href="#7-costs">7. Costs</a></li>
+                <li><a href="#8-known-assumptions-and-limitations">8. Assumptions &amp; Limitations</a></li>
+            </ul>
+        </div>
+        <div class="toc-section">
+            <div class="toc-section-label">Data Sources</div>
+            <ul>
+                <li><a href="#canoe-industry-sector-data-sources-catalog">CANOE Industry Sector &mdash; Data Sources</a>
+                </li>
+                <li><a href="#1-data-source-summary">1. Data Source Summary</a></li>
+                <li><a href="#2-nrcan-comprehensive-energy-use-database-ceud">2. NRCan CEUD</a></li>
+                <li><a href="#3-canada-energy-regulator-cer-macro-indicators">3. CER Macro-Indicators</a></li>
+                <li><a href="#4-statistics-canada">4. Statistics Canada</a></li>
+                <li><a href="#5-update-procedures-checklist">5. Update Procedures</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="content">
+
+        <h1 id="canoe-industry-sector-data-processing-documentation">CANOE Industry Sector &mdash; Data Processing
+            Documentation</h1>
+        <p><em>Comprehensive documentation of the data pipeline that converts upstream data sources into a Temoa-ready
+                SQLite database for the Canadian Open Energy (CANOE) model's industrial sector.</em></p>
+        <hr>
+        <h2 id="table-of-contents">Table of Contents</h2>
+        <ol>
+            <li><a href="#1-overview">Overview</a></li>
+            <li><a href="#2-pipeline-architecture">Pipeline Architecture</a></li>
+            <li><a href="#3-configuration-and-setup">Configuration and Setup</a></li>
+            <li><a href="#4-external-data-fetching">External Data Fetching</a></li>
+            <li><a href="#5-demand-and-capacity">Demand and Capacity</a></li>
+            <li><a href="#6-technology-splits-and-efficiencies">Technology Splits and Efficiencies</a></li>
+            <li><a href="#7-costs">Costs</a></li>
+            <li><a href="#8-known-assumptions-and-limitations">Known Assumptions and Limitations</a></li>
+        </ol>
+        <hr>
+
+        <h2 id="1-overview">1. Overview</h2>
+        <h3 id="purpose">Purpose</h3>
+        <p>The CANOE industry sector aggregation tool automatically constructs a Temoa-compatible SQLite database
+            representing the Canadian industrial sector. It pulls data primarily from Natural Resources Canada (NRCan),
+            the Canada Energy Regulator (CER), and Statistics Canada to construct top-down representation of energy
+            demands and fuel mixes across major sub-sectors.</p>
+        <h3 id="what-the-tool-produces">What the Tool Produces</h3>
+        <ul>
+            <li>A <strong>Temoa-schema SQLite database</strong> containing technology attributes, costs, capacities,
+                energy demands, and fuel mixes utilized by the industrial sector.</li>
+        </ul>
+        <h3 id="scope">Scope</h3>
+        <p>The model operates across:</p>
+        <ul>
+            <li><strong>Regions</strong>: Canadian provinces.</li>
+            <li><strong>Subsectors</strong>: Construction, Pulp and paper, Smelting, Petroleum refining, Cement,
+                Chemicals, Iron and Steel, Other manufacturing, Forestry, and Mining/Oil &amp; Gas extraction.</li>
+            <li><strong>Commodities</strong>: Electricity, Natural Gas, Diesel, Heavy Fuel Oil, Petroleum Coke, Natural
+                Gas Liquids, Coal, Coke, Wood, and Other.</li>
+            <li><strong>Time resolution</strong>: Annual bounds (no hourly Demand Specific Distributions are mapped for
+                the industry sector in this tool).</li>
+            <li><strong>Planning horizon</strong>: Configurable multi-year stepping (default: starting in 2025).</li>
+        </ul>
+        <hr>
+
+        <h2 id="2-pipeline-architecture">2. Pipeline Architecture</h2>
+        <p>Unlike building sectors, the industry processing logic utilizes a modular ETL-like architecture coordinated
+            through a central <code>aggregator.py</code> script:</p>
+        <div class="codehilite">
+            <pre><span></span><code>1. aggregator.py        &rarr; Main orchestrator
+   a. setup_runtime     &rarr; Initialize database, tables, schema versions, and shared domain constants
+   b. build_techcom     &rarr; Map physical commodities and generic technologies into Temoa sets
+   c. data_scraper      &rarr; Load CEUD baseline (NRCan) and Macro Indicators (CER)
+   d. statcan           &rarr; Load Atlantic (ATL) province disaggregation mapping
+   e. demands           &rarr; Build Demand and ExistingCapacity tables, scaling future demands
+   f. techinput         &rarr; Extract fuel split mixes (`LimitTechInputSplitAnnual`) from NRCan
+   g. efficiency        &rarr; Seed theoretical conversion boundaries (Efficiency = 1.0)
+   h. costs             &rarr; Seed generic placeholder capital costs
+   i. post_processing   &rarr; Embed datasets, sources taxonomy, and IDs
+</code></pre>
+        </div>
+        <hr>
+
+        <h2 id="3-configuration-and-setup">3. Configuration and Setup</h2>
+        <h3 id="general-settings">General Settings</h3>
+        <p>Defined in <code>input/params.yaml</code>:</p>
+        <ul>
+            <li><strong><code>schema_version</code></strong>: Ensures strict alignment to standard Temoa schema (version
+                3.1).</li>
+            <li><strong><code>periods</code></strong>: List of modeled future years (e.g., <code>[2025, ...]</code>).
+            </li>
+            <li><strong><code>NRCan_year</code></strong>: The base historical year calibration point (default: 2022).
+            </li>
+        </ul>
+        <h3 id="domain-mapping">Domain Mapping</h3>
+        <p>The pipeline statically maps base strings into Temoa IDs, creating naming schemes dynamically. For instance,
+            subsectors are assigned the prefix <code>I_</code> and generic demands prefixed with <code>D_</code> (e.g.,
+            <code>D_CEMENT</code> mapped to "Cement manufacturing").</p>
+        <hr>
+
+        <h2 id="4-external-data-fetching">4. External Data Fetching</h2>
+        <p>Data fetching utilizes robust local caching (<code>data_cache/</code> or <code>cache/</code>) to limit
+            repeated web requests:</p>
+        <ol>
+            <li><strong>NRCan Comprehensive Energy Use Database (CEUD)</strong>: Actively scraped via the
+                <code>oee.nrcan.gc.ca</code> API. Fetches Tables 2 through 12 individually for every province (AB, BC,
+                MB, SK, ON, QC) and the Atlantic aggregate (ATL).</li>
+            <li><strong>CER Energy Future (CEF)</strong>: Downloads Macro-indicators defining expected forward
+                trajectories of GDP parameters.</li>
+            <li><strong>StatCan Table 25-10-0029</strong>: Downloads the zip archive for specific geographic
+                disaggregation of primary and secondary energy supply/demand characteristics.</li>
+        </ol>
+        <hr>
+
+        <h2 id="5-demand-and-capacity">5. Demand and Capacity</h2>
+        <p>Constructed primarily through <code>demands.py</code>:</p>
+        <ul>
+            <li><strong>Base Year (2022) Alignment</strong>: Takes provincial industrial energy consumption directly
+                from NRCan CEUD.</li>
+            <li><strong>Atlantic Disaggregation</strong>: Since NRCan often aggregates Atlantic provinces into 'ATL',
+                the script intersects data with <strong>StatCan table 25-10-0029</strong>. Total physical supply ratios
+                are extracted by subsector to break exactly what fraction of "ATL" belongs to NB, NS, PEI, and NL.</li>
+            <li><strong>Future Demand Projection</strong>: Demand in future periods dynamically scales relative to the
+                base year using <strong>Real Gross Domestic Product ($2012 Millions)</strong> growth factors extracted
+                from the <strong>CER CEF 'Global Net-zero' scenario</strong>.</li>
+            <li><strong>Capacity</strong>: Existing capacity aligns with the preceding historical year data values from
+                NRCan.</li>
+        </ul>
+        <hr>
+
+        <h2 id="6-technology-splits-and-efficiencies">6. Technology Splits and Efficiencies</h2>
+        <p>The industrial model utilizes a top-down approach emphasizing generic fuel consumption pathways:</p>
+        <h3 id="fuel-input-splits-techinputpy">Fuel Input Splits (<code>techinput.py</code>)</h3>
+        <p>Uses <code>LimitTechInputSplitAnnual</code> parameters to lock the allowed fuel mix to the historical base
+            parameters observed within NRCan's tables.</p>
+        <ul>
+            <li>Pulls ratios of Electricity, Natural Gas, Diesel, Wood, etc.</li>
+            <li>Any values mapped as missing or excluded (<code>X</code> or <code>n.a.</code>) evaluate to 'na', and
+                their remainder block up to 100% is explicitly equally distributed against the other unknown physical
+                vectors to create closure inside the optimizer.</li>
+        </ul>
+        <h3 id="efficiencies-efficiencypy">Efficiencies (<code>efficiency.py</code>)</h3>
+        <p>Due to the structure of top-down data representing secondary/final energy outputs natively:</p>
+        <ul>
+            <li><strong>Efficiencies are configured structurally as exactly 1.0</strong>. The tool assumes the output
+                utility corresponds one-to-one mechanically with the input fuel vector inside the generic bounds mapped.
+            </li>
+        </ul>
+        <hr>
+
+        <h2 id="7-costs">7. Costs</h2>
+        <p>The pipeline configures generic boundary assumptions for Capital Investments (<code>costs.py</code>):</p>
+        <ul>
+            <li>Due to data availability limitations resolving specific industrial equipment (kilns, blast furnaces,
+                crackers) bounds, <code>CostInvest</code> defaults temporarily to <strong>0.1 M$/PJ</strong> across
+                arbitrary initial conditions.</li>
+        </ul>
+        <hr>
+
+        <h2 id="8-known-assumptions-and-limitations">8. Known Assumptions and Limitations</h2>
+        <ol>
+            <li><strong>GDP-to-Demand Decoupling</strong>: Future energy demand intrinsically scales at a 1:1 ratio with
+                the CER Global Net-Zero framework's real GDP. It lacks internal non-linear scaling recognizing heavy
+                industrial sector transitions (e.g., decoupling energy intensity per dollar of GDP via process
+                efficiency upgrades).</li>
+            <li><strong>Static Fuel Splits</strong>: Relying rigidly on base-year (2022) input mix fractions
+                artificially constrains the model's capacity to switch fuels heavily across future model periods unless
+                specifically relaxed downstream.</li>
+            <li><strong>Efficiency Staticism</strong>: Lacking explicit process-level unit modeling, generic
+                efficiencies held at 1.0 limit representations of thermal recuperation or next-generation
+                electrification (which routinely demonstrate COP &gt; 1.0 or high thermal retention).</li>
+            <li><strong>Proxy Costs</strong>: Placeholder <code>CostInvest</code> metrics mean realistic capacity
+                expansions in industrial domains are not aggressively bound by realistic capital burdens natively in
+                this module.</li>
+            <li><strong>No Time-Slicing</strong>: The pipeline outputs strict annual constraints, deferring arbitrary
+                time-partitioning. Peak load physics intrinsic to heavily industrialized grids are smoothed over the
+                annual timeframe.</li>
+            <li><strong>StatCan Cross-Mapping Alignment</strong>: Assigning StatCan gross fuel survey ratios dynamically
+                back against CEUD NRCan reporting schemas fundamentally depends on both government bodies interpreting
+                firm survey data using harmonized NAIC categorizations perfectly.</li>
+        </ol>
+        <div class="section-divider">
+            <h1 id="canoe-industry-sector-data-sources-catalog">CANOE Industry Sector &mdash; Data Sources Catalog</h1>
+        </div>
+
+        <h2 id="1-data-source-summary">1. Data Source Summary</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Data Type</th>
+                    <th style="text-align: left;">Primary Source</th>
+                    <th style="text-align: left;">Granularity</th>
+                    <th style="text-align: left;">Update Frequency</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: left;"><strong>Historical Demand</strong></td>
+                    <td style="text-align: left;">NRCan CEUD</td>
+                    <td style="text-align: left;">Province / Annual</td>
+                    <td style="text-align: left;">Annual</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;"><strong>Demand Scaling</strong></td>
+                    <td style="text-align: left;">CER CEF Macro Indicators</td>
+                    <td style="text-align: left;">Canada / Annual</td>
+                    <td style="text-align: left;">Annual/Biannual</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;"><strong>Atlantic Disaggregation</strong></td>
+                    <td style="text-align: left;">Statistics Canada</td>
+                    <td style="text-align: left;">Provincial / Annual</td>
+                    <td style="text-align: left;">Annual</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;"><strong>Fuel Input Splits</strong></td>
+                    <td style="text-align: left;">NRCan CEUD</td>
+                    <td style="text-align: left;">Province / Annual</td>
+                    <td style="text-align: left;">Annual</td>
+                </tr>
+            </tbody>
+        </table>
+        <h2 id="2-nrcan-comprehensive-energy-use-database-ceud">2. NRCan Comprehensive Energy Use Database (CEUD)</h2>
+        <ul>
+            <li><strong>Usage</strong>: Provides the anchor framework for historical base year energy demands, fuel
+                utilization combinations, and sectorial breakdowns.</li>
+            <li><strong>Update Procedure</strong>: The base year is configured via <code>NRCan_year</code> in
+                <code>input/params.yaml</code>. Ensure the URL query string inside <code>data_scraper.py</code>
+                successfully returns HTML mapping tables when updated format changes occur.</li>
+        </ul>
+        <h2 id="3-canada-energy-regulator-cer-macro-indicators">3. Canada Energy Regulator (CER) Macro-Indicators</h2>
+        <ul>
+            <li><strong>Usage</strong>: Extrapolates future demand projections using the 'Global Net-Zero' Real GDP
+                scenario paths.</li>
+            <li><strong>Update Procedure</strong>: If the CER produces a new Energy Futures release (e.g., shifting from
+                EF2023 to EF2024), the <code>CER_URL</code> variable globally inside <code>data_scraper.py</code> must
+                point to the new direct CSV link. Column indexing must be double-checked against the resulting header
+                schema.</li>
+        </ul>
+        <h2 id="4-statistics-canada">4. Statistics Canada</h2>
+        <ul>
+            <li><strong>Usage</strong>: Pulls specific Atlantic region breakdowns matching Table 25-10-0029 to
+                compensate for NRCan regional aggregation.</li>
+            <li><strong>Update Procedure</strong>: The script relies functionally upon the structure inside Zip archive
+                downloads. Modifications are rarely needed unless StatCan universally changes its API schema or table
+                identifier.</li>
+        </ul>
+        <h2 id="5-update-procedures-checklist">5. Update Procedures (Checklist)</h2>
+        <p>During regular annual or biannual CANOE updates:</p>
+        <ol>
+            <li><strong>Clear Caches</strong>: Delete the contents of the <code>cache/</code> directory to force fresh
+                data scrapes from NRCan, CER, and StatCan endpoints.</li>
+            <li><strong>Review Config</strong>: Modify <code>NRCan_year</code> and subsequent projection
+                <code>periods</code> arrays in <code>input/params.yaml</code>.</li>
+            <li><strong>CER URL Validation</strong>: Test the explicit CSV download URL for the Canada Energy Regulator
+                and verify they haven't released a newer Energy Futures forecast matrix. Update <code>CER_URL</code> if
+                they have.</li>
+            <li><strong>Execution</strong>: Execute <code>aggregator.py</code> and subsequently review the generated
+                Temoa-SQLite structures ensuring no orphaned tables appear, ensuring <code>data_id</code> tags have
+                safely assigned references, and demand generation succeeds against the newest dataset constraints.</li>
+        </ol>
+    </main>
+
+</body>
+
+</html>
